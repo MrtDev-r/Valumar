@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 
 export default function Gallery({ mainImage, images }) {
   const safeImages = Array.isArray(images) ? images : [];
@@ -19,11 +20,14 @@ export default function Gallery({ mainImage, images }) {
 
   return (
     <div>
-      <div className="relative">
-        <img
+      <div className="relative w-full aspect-square rounded-lg bg-gray-100 overflow-hidden">
+        <Image
           src={allImages[current]}
           alt={`Foto ${current + 1}`}
-          className="w-full aspect-square object-contain rounded-lg bg-gray-100"
+          fill
+          sizes="(max-width: 768px) 100vw, 700px"
+          priority={current === 0}
+          className="object-contain"
         />
 
         {allImages.length > 1 && (
@@ -50,15 +54,21 @@ export default function Gallery({ mainImage, images }) {
       {allImages.length > 1 && (
         <div className="flex gap-2 mt-2 overflow-x-auto">
           {allImages.map((url, index) => (
-            <img
+            <button
               key={index}
-              src={url}
               onClick={() => setCurrent(index)}
-              className={`w-16 h-16 object-cover rounded cursor-pointer border-2 ${
+              className={`relative w-16 h-16 shrink-0 overflow-hidden rounded cursor-pointer border-2 ${
                 index === current ? "border-black" : "border-transparent"
               }`}
-              alt={`Miniatura ${index + 1}`}
-            />
+            >
+              <Image
+                src={url}
+                alt={`Miniatura ${index + 1}`}
+                fill
+                sizes="64px"
+                className="object-cover"
+              />
+            </button>
           ))}
         </div>
       )}
